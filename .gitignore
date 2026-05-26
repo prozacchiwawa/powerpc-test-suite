@@ -1,0 +1,6 @@
+*.601
+*.elf
+*.o
+*.s
+arith_test_linux
+gen_subf_test
