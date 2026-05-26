@@ -132,10 +132,14 @@ int main(int argc, char **argv) {
     printf("\n");
     
     // load r3 with each thing we want to print
+    // ensure that cr and xer are saved in callee-save registers so
+    // we still have them after printing.
+    printf("\tmfspr 30,1\n");
+    printf("\tmfcr 31\n");
     printf("\tbl print_hex\n");
-    printf("\tmfcr 3\n");
+    printf("\tmr 3,31\n");
     printf("\tbl print_hex\n");
-    printf("\tmfspr 3,1\n");
+    printf("\tmr 3,30\n");
     printf("\tbl print_hex\n");
     
     printf("\n\n");
