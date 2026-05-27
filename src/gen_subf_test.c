@@ -2,19 +2,10 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#define NARGS 2
-
-enum Argument {
-  Nothing,
-  Register,
-  Immediate
-};
-
-struct Instruction {
-  const char *name;
-  enum Argument A, B;
-};
+#include "lfsr.h"
+#include "argument.h"
+#include "register.h"
+#include "instruction.h"
 
 struct Instruction to_generate[] = {
   { "add", Register, Register },
@@ -30,14 +21,14 @@ struct Instruction to_generate[] = {
   { "adde.", Register, Register },
   { "addeo", Register, Register },
   { "addeo.", Register, Register },
-  { "addme", Register, Nothing },
-  { "addme.", Register, Nothing },
-  { "addmeo", Register, Nothing },
-  { "addmeo.", Register, Nothing },
-  { "addze", Register, Nothing },
-  { "addze.", Register, Nothing },
-  { "addzeo", Register, Nothing },
-  { "addzeo.", Register, Nothing },
+  { "addme", Register },
+  { "addme.", Register },
+  { "addmeo", Register },
+  { "addmeo.", Register },
+  { "addze", Register },
+  { "addze.", Register },
+  { "addzeo", Register },
+  { "addzeo.", Register },
   { "addis", Register, Immediate },
   { "addis.", Register, Immediate },
   { "subf", Register, Register },
@@ -52,40 +43,16 @@ struct Instruction to_generate[] = {
   { "subfe.", Register, Register },
   { "subfeo", Register, Register },
   { "subfeo.", Register, Register },
-  { "subfme", Register, Nothing },
-  { "subfme.", Register, Nothing },
-  { "subfmeo", Register, Nothing },
-  { "subfmeo.", Register, Nothing },
-  { "subfze", Register, Nothing },
-  { "subfze.", Register, Nothing },
-  { "subfzeo", Register, Nothing },
-  { "subfzeo.", Register, Nothing },
+  { "subfme", Register },
+  { "subfme.", Register },
+  { "subfmeo", Register },
+  { "subfmeo.", Register },
+  { "subfze", Register },
+  { "subfze.", Register },
+  { "subfzeo", Register },
+  { "subfzeo.", Register },
   { "subfic", Register, Immediate },
 };
-
-int lfsr_step(int *lfsr) {
-  int top = (*lfsr >> 15) & 1;
-  *lfsr = ((*lfsr << 1) | top) ^ 0x2347;
-  return *lfsr;
-}
-
-uint32_t int_lfsr(int *lfsr) {
-  return lfsr_step(lfsr) << 16 | lfsr_step(lfsr);
-}
-
-void fillreg(const char *r, uint32_t value) {
-  printf("\tlis 0,%d\n", (value >> 16) & 0xffff);
-  printf("\tori %s,0,%d\n", r, value & 0xffff);
-}
-
-enum Argument nth_argument(struct Instruction *i, int n) {
-  switch(n) {
-  case 0:
-    return i->A;
-  default:
-    return i->B;
-  }
-}
 
 int main(int argc, char **argv) {
   if (argc < 3) {

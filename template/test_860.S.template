@@ -5,7 +5,7 @@
 	.globl main
 
 main:
-	.include "arith_test.s"
+	.include @@INCLUDE@@
 
 	xor 3,3,3
 	bl exit
